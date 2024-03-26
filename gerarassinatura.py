@@ -1,5 +1,6 @@
 from email.mime.image import MIMEImage
 import os
+import shutil
 import time
 import win32com.client
 import pyodbc
@@ -8,6 +9,12 @@ from googletrans import Translator
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from dotenv import load_dotenv
+
+load_dotenv()
+
+conn_str = os.getenv("STRING_CONNECTION")
+
 
 def traduzir_texto(texto, origem, destino):
     translator = Translator()
@@ -15,48 +22,12 @@ def traduzir_texto(texto, origem, destino):
     return traducao.text
 
 
-# Função para buscar as informações dos funcionários
-def buscar_ids_funcionario():
-    # Configurar a conexão com o banco de dados
-    server = 'DESKTOP-KKBI7EQ\SQLEXPRESS'
-    database = '123'
-    username = '123'
-    password = '123'
-    driver = '{ODBC Driver 17 for SQL Server}'  # Ou o driver correspondente ao seu ambiente
-
-    # Estabelecer a conexão com o banco de dados
-    conn_str = f'DRIVER={driver};SERVER={server};DATABASE={database};UID={username};PWD={password}'
-    conn = pyodbc.connect(conn_str)
-    cursor = conn.cursor()
-
-    # Executar a consulta SQL para buscar os IDs dos funcionários ativos com email
-    query = "SELECT idfuncionario FROM Funcionario where idfuncionario = 381"
-    cursor.execute(query)
-
-    # Recuperar os resultados da consulta
-    resultados = cursor.fetchall()
-    
-    # Lista de IDs dos funcionários
-    ids_funcionarios = [resultado[0] for resultado in resultados]
-    
-    return ids_funcionarios
-
-# Função para buscar as informações do funcionário
 def buscar_informacoes_funcionario(id_funcionario):
-    # Configurar a conexão com o banco de dados
-    server = '123'
-    database = '123'
-    username = '123'
-    password = '123'
-    driver = '{ODBC Driver 17 for SQL Server}'   # Ou o driver correspondente ao seu ambiente
 
-    # Estabelecer a conexão com o banco de dados
-    conn_str = f'DRIVER={driver};SERVER={server};DATABASE={database};UID={username};PWD={password}'
     conn = pyodbc.connect(conn_str)
     cursor = conn.cursor()
 
-    # Executar a consulta SQL para buscar as informações do funcionário
-    query = f"SELECT nome, cargo, ramal, email FROM Funcionario WHERE idfuncionario = 248"
+    query = f"SELECT nome, cargo, ramal, email FROM Funcionario WHERE idfuncionario = {id_funcionario}"
     cursor.execute(query)
 
     # Recuperar os resultados da consulta
@@ -87,14 +58,11 @@ def atualizar_slide_com_informacoes(slide, nome, cargo_portugues, cargo_ingles, 
                     if "RAMAL" in run.text:
                         run.text = run.text.replace("RAMAL", ramal)
 
-# Função para enviar o slide por e-mail
-
 def enviar_jpg_por_email(email, caminho_jpg):
-    # Configurar os detalhes do servidor de e-mail
-    servidor_smtp = "smtp.gmail.com"  # Insira o servidor SMTP adequado
-    porta_smtp = 587  # Insira a porta SMTP adequada
-    email_remetente = "123@schwarz.com.br"  # Insira o e-mail do remetente
-    senha_remetente = "123"  # Insira a senha do remetente
+    servidor_smtp = "smtp.gmail.com"
+    porta_smtp = 587
+    email_remetente = os.getenv("SMTP_SENHA_REMETENTE")
+    senha_remetente = os.getenv("SMTP_SENHA_SENHA")
 
     # Criar o objeto MIMEMultipart
     mensagem = MIMEMultipart()
@@ -126,7 +94,7 @@ def transformar_em_jpg(caminho_arquivo):
             powerpoint = win32com.client.Dispatch("Powerpoint.Application")
             deck = powerpoint.Presentations.Open(caminho_arquivo)
             time.sleep(2)
-            deck.SaveAs(caminho_arquivo[:-5], ppttoJPG)  # formatType = 32 for ppt to pdf
+            deck.SaveAs(caminho_arquivo[:-5], ppttoJPG)
             deck.Close()
             powerpoint.Quit()   
             print('Salvo em JPG')
@@ -138,7 +106,7 @@ def transformar_em_jpg(caminho_arquivo):
         try:
             powerpoint = win32com.client.Dispatch("Powerpoint.Application")
             deck = powerpoint.Presentations.Open(caminho_arquivo)
-            deck.SaveAs(caminho_arquivo[:-4], ppttoJPG)  # formatType = 17 for ppt to pdf
+            deck.SaveAs(caminho_arquivo[:-4], ppttoJPG)
             deck.Close()
             powerpoint.Quit()
             print('Salvo em JPG')
@@ -147,11 +115,8 @@ def transformar_em_jpg(caminho_arquivo):
             print('Não foi possível abrir o arquivo')
 
 
-import shutil
-
 def excluir_arquivo(caminho_arquivo):
     if os.path.exists(caminho_arquivo):
-    # Exclui o arquivo
         os.remove(caminho_arquivo)
         print("Arquivo excluído com sucesso.")
     else:
@@ -164,21 +129,18 @@ def duplicar_arquivo_pptx(caminho_arquivo,diretorio_destino, nome):
     return novo_caminho
 
 
-def processar_assinaturas():
-     # Buscar a lista de IDs dos funcionários
+def processar_assinaturas(id):
     ids_funcionarios = buscar_ids_funcionario()
 
     caminho_arquivo_original = "C:\Temp\Assinatura e-mail Schwarz.pptx"
     diretorio_destino = "C:\Temp\Assinaturas PDF"
 
     for id_funcionario in ids_funcionarios:
-        # Buscar informações do funcionário
         informacoes_funcionario = buscar_informacoes_funcionario(id_funcionario)
 
         if informacoes_funcionario:
             nome, cargo_portugues, cargo_ingles, ramal, email = informacoes_funcionario
 
-            # Verificar o valor do ramal
             if ramal is None:
                 ramal = '8700'
 
@@ -196,15 +158,14 @@ def processar_assinaturas():
             presentation.save(caminho_arquivo_duplicado)
 
             # Converter o PPT em PDF
-            #transformar_em_jpg(caminho_arquivo_duplicado)
+            transformar_em_jpg(caminho_arquivo_duplicado)
 
             # Caminho do arquivo JPG
-            #caminho_arquivo_jpg = caminho_arquivo_duplicado.replace(".pptx", "") + "\Slide1.JPG"
+            caminho_arquivo_jpg = caminho_arquivo_duplicado.replace(".pptx", "") + "\Slide1.JPG"
 
             # Enviar o JPG por e-mail
-            #enviar_jpg_por_email(email, caminho_arquivo_jpg)
-
-
+            enviar_jpg_por_email(email, caminho_arquivo_jpg)
+            print("Assinatura enviada com sucesso!")
         else:
             print(f"Informações do funcionário com ID {id_funcionario} não encontradas.")
 

@@ -124,9 +124,9 @@ def excluir_arquivo(caminho_arquivo):
 
 def duplicar_arquivo_pptx(caminho_arquivo,diretorio_destino, nome):
     nome_arquivo = os.path.basename(caminho_arquivo)
-    novo_caminho = os.path.join(diretorio_destino, nome + ' ' + nome_arquivo)
-    shutil.copy2(caminho_arquivo, novo_caminho)
-    return novo_caminho
+    path_novo_arquivo = os.path.join(diretorio_destino, nome + ' ' + nome_arquivo)
+    shutil.copy2(caminho_arquivo, path_novo_arquivo)
+    return path_novo_arquivo
 
 
 def processar_assinaturas(id):

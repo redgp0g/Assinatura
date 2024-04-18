@@ -15,12 +15,10 @@ load_dotenv()
 
 conn_str = os.getenv("STRING_CONNECTION")
 
-
 def traduzir_texto(texto, origem, destino):
     translator = Translator()
     traducao = translator.translate(texto, src=origem, dest=destino)
     return traducao.text
-
 
 def buscar_informacoes_funcionario(id_funcionario):
 
@@ -41,7 +39,7 @@ def buscar_informacoes_funcionario(id_funcionario):
         return nome, cargo_portugues, cargo_ingles, ramal, email
     else:
         return None
-# Função para atualizar o PPT com as informações do funcionário
+
 def atualizar_slide_com_informacoes(slide, nome, cargo_portugues, cargo_ingles, ramal):
 
     for shape in slide.shapes:

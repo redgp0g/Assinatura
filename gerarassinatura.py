@@ -40,7 +40,7 @@ def buscar_informacoes_funcionario(id_funcionario):
     else:
         return None
 
-def atualizar_slide_com_informacoes(slide, nome, cargo_portugues, cargo_ingles, ramal):
+def atualizar_slide(slide, nome, cargo_portugues, cargo_ingles, ramal):
 
     for shape in slide.shapes:
         if shape.has_text_frame:
@@ -148,9 +148,8 @@ def processar_assinaturas(id):
             # Carregar o arquivo PPT duplicado
             presentation = Presentation(caminho_arquivo_duplicado)
 
-            # Atualizar o slide com as informações do funcionário
-            novo_slide = presentation.slides[0]
-            atualizar_slide_com_informacoes(novo_slide, nome, cargo_portugues, cargo_ingles, ramal)
+        novo_slide = presentation.slides[0]
+        atualizar_slide(novo_slide, nome, cargo_portugues, cargo_ingles, ramal)
 
             # Salvar o PPT atualizado
             presentation.save(caminho_arquivo_duplicado)

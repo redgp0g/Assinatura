@@ -68,7 +68,7 @@ def enviar_jpg_por_email(email, caminho_jpg):
     mensagem["To"] = email
     mensagem["Subject"] = "Assinatura de e-mail"
 
-    recado = "Email automático, por favor não responder.\nOlá! Segue sua assinatura corrigida com o selo GPTW atualizado!\nDúvidas RH fica à disposição."
+    recado = "Email automático, por favor não responder.\nOlá! Segue sua assinatura nova com o selo GPTW atualizado!\nDúvidas RH fica à disposição."
     mensagem_texto = MIMEText(recado)
     mensagem.attach(mensagem_texto)
 
@@ -120,51 +120,35 @@ def excluir_arquivo(caminho_arquivo):
     else:
         print("O arquivo não existe.")
 
-def duplicar_arquivo_pptx(caminho_arquivo,diretorio_destino, nome):
-    nome_arquivo = os.path.basename(caminho_arquivo)
-    path_novo_arquivo = os.path.join(diretorio_destino, nome + ' ' + nome_arquivo)
-    shutil.copy2(caminho_arquivo, path_novo_arquivo)
-    return path_novo_arquivo
-
-
 def processar_assinaturas(id):
-    ids_funcionarios = buscar_ids_funcionario()
 
-    caminho_arquivo_original = "C:\Temp\Assinatura e-mail Schwarz.pptx"
-    diretorio_destino = "C:\Temp\Assinaturas PDF"
+    informacoes_funcionario = buscar_informacoes_funcionario(id)
 
-    for id_funcionario in ids_funcionarios:
-        informacoes_funcionario = buscar_informacoes_funcionario(id_funcionario)
+    if informacoes_funcionario:
+        nome, cargo_portugues, cargo_ingles, ramal, email = informacoes_funcionario
 
-        if informacoes_funcionario:
-            nome, cargo_portugues, cargo_ingles, ramal, email = informacoes_funcionario
+        if ramal is None:
+            ramal = '8700'
 
-            if ramal is None:
-                ramal = '8700'
+        shutil.copy2("Assinatura e-mail Schwarz.pptx", nome)
 
-            # Duplicar o arquivo PPT original
-            caminho_arquivo_duplicado = duplicar_arquivo_pptx(caminho_arquivo_original, diretorio_destino, nome)
-
-            # Carregar o arquivo PPT duplicado
-            presentation = Presentation(caminho_arquivo_duplicado)
+        presentation = Presentation(nome)
 
         novo_slide = presentation.slides[0]
         atualizar_slide(novo_slide, nome, cargo_portugues, cargo_ingles, ramal)
 
-            # Salvar o PPT atualizado
-            presentation.save(caminho_arquivo_duplicado)
+        presentation.save(nome)
 
-            # Converter o PPT em PDF
-            transformar_em_jpg(caminho_arquivo_duplicado)
+        transformar_em_jpg(nome)
 
-            # Caminho do arquivo JPG
-            caminho_arquivo_jpg = caminho_arquivo_duplicado.replace(".pptx", "") + "\Slide1.JPG"
+        # Caminho do arquivo JPG
+        # caminho_arquivo_jpg = nome.replace(".pptx", "") + "\Slide1.JPG"
 
-            # Enviar o JPG por e-mail
-            enviar_jpg_por_email(email, caminho_arquivo_jpg)
-            print("Assinatura enviada com sucesso!")
-        else:
-            print(f"Informações do funcionário com ID {id_funcionario} não encontradas.")
+        # Enviar o JPG por e-mail
+        # enviar_jpg_por_email(email, caminho_arquivo_jpg)
+        print("Assinatura enviada com sucesso!")
+    else:
+        print(f"Informações do funcionário com ID {id_funcionario} não encontradas.")
 
 
 processar_assinaturas()

@@ -148,7 +148,7 @@ def processar_assinaturas(id):
         # enviar_jpg_por_email(email, caminho_arquivo_jpg)
         print("Assinatura enviada com sucesso!")
     else:
-        print(f"Informações do funcionário com ID {id_funcionario} não encontradas.")
+        print(f"Informações do funcionário com ID {id} não encontradas.")
 
 
 processar_assinaturas()

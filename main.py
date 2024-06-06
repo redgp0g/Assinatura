@@ -130,7 +130,7 @@ def processar_assinaturas(id):
         if ramal is None:
             ramal = '8700'
 
-        shutil.copy2("Assinatura e-mail Schwarz.pptx", nome)
+        shutil.copy2("Assinatura e-mail Schwarz.pptx", nome +".pptx")
 
         presentation = Presentation(nome)
 

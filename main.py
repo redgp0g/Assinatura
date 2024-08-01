@@ -145,12 +145,12 @@ def processar_assinaturas(id):
 
         transformar_em_jpg(caminho_novo_pptx)
 
-        # Caminho do arquivo JPG
-        # caminho_arquivo_jpg = nome.replace(".pptx", "") + "\Slide1.JPG"
+        if email:
+            caminho_arquivo_jpg = caminho_novo_pptx.replace(".pptx", "") + "\Slide1.JPG"
 
-        # Enviar o JPG por e-mail
-        # enviar_jpg_por_email(email, caminho_arquivo_jpg)
-        print("Assinatura enviada com sucesso!")
+            enviar_jpg_por_email(email, caminho_arquivo_jpg)
+            shutil.rmtree(caminho_novo_pptx.replace(".pptx", ""))
+            print("Assinatura enviada com sucesso!")
     else:
         print(f"Informações do funcionário com ID {id} não encontradas.")
 

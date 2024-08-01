@@ -130,16 +130,20 @@ def processar_assinaturas(id):
         if ramal is None:
             ramal = '8700'
 
-        shutil.copy2("Assinatura e-mail Schwarz.pptx", nome +".pptx")
+        caminho_raiz = os.getcwd()
+        caminho_modelo = os.path.join(caminho_raiz, "Assinatura e-mail Schwarz.pptx")
+        caminho_novo_pptx = os.path.join(caminho_raiz, nome + ".pptx")
 
-        presentation = Presentation(nome)
+        shutil.copy2(caminho_modelo, caminho_novo_pptx)
+
+        presentation = Presentation(caminho_novo_pptx)
 
         novo_slide = presentation.slides[0]
         atualizar_slide(novo_slide, nome, cargo_portugues, cargo_ingles, ramal)
 
-        presentation.save(nome)
+        presentation.save(caminho_novo_pptx)
 
-        transformar_em_jpg(nome)
+        transformar_em_jpg(caminho_novo_pptx)
 
         # Caminho do arquivo JPG
         # caminho_arquivo_jpg = nome.replace(".pptx", "") + "\Slide1.JPG"

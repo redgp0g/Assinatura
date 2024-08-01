@@ -68,7 +68,7 @@ def enviar_jpg_por_email(email, caminho_jpg):
     mensagem["To"] = email
     mensagem["Subject"] = "Assinatura de e-mail"
 
-    recado = "Email automático, por favor não responder.\nOlá! Segue sua assinatura nova com o selo GPTW atualizado!\nDúvidas RH fica à disposição."
+    recado = "Email automático, por favor não responder.\n\n\nOlá! Segue sua assinatura nova com o selo GPTW atualizado!\n\nDúvidas RH fica à disposição."
     mensagem_texto = MIMEText(recado)
     mensagem.attach(mensagem_texto)
 

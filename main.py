@@ -59,8 +59,8 @@ def atualizar_slide(slide, nome, cargo_portugues, cargo_ingles, ramal):
 def enviar_jpg_por_email(email, caminho_jpg):
     servidor_smtp = "smtp.gmail.com"
     porta_smtp = 587
-    email_remetente = os.getenv("SMTP_SENHA_REMETENTE")
-    senha_remetente = os.getenv("SMTP_SENHA_SENHA")
+    email_remetente = os.getenv("SMTP_EMAIL_REMETENTE")
+    senha_remetente = os.getenv("SMTP_SENHA_REMETENTE")
 
     # Criar o objeto MIMEMultipart
     mensagem = MIMEMultipart()

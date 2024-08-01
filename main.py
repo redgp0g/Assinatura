@@ -48,11 +48,11 @@ def atualizar_slide(slide, nome, cargo_portugues, cargo_ingles, ramal):
             for paragraph in text_frame.paragraphs:
                 for run in paragraph.runs:
                     if "NOME" in run.text:
-                        run.text = run.text.replace("NOME",  nome)
+                        run.text = nome
                     if "CARGOPT" in run.text:
-                        run.text = run.text.replace("CARGOPT", cargo_portugues)
+                        run.text = cargo_portugues
                     if "CARGOIN" in run.text:
-                        run.text = run.text.replace("CARGOIN", cargo_ingles.upper())
+                        run.text = cargo_ingles.upper()
                     if "RAMAL" in run.text:
                         run.text = run.text.replace("RAMAL", ramal)
 

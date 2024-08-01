@@ -15,9 +15,9 @@ load_dotenv()
 
 conn_str = os.getenv("STRING_CONNECTION")
 
-def traduzir_texto(texto, origem, destino):
+def traduzir_texto(texto):
     translator = Translator()
-    traducao = translator.translate(texto, src=origem, dest=destino)
+    traducao = translator.translate(texto, src='pt', dest='en')
     return traducao.text
 
 def buscar_informacoes_funcionario(id_funcionario):
@@ -33,7 +33,7 @@ def buscar_informacoes_funcionario(id_funcionario):
     if resultado:
         nome = resultado.nome
         cargo_portugues = resultado.cargo
-        cargo_ingles = traduzir_texto(cargo_portugues, 'pt', 'en')
+        cargo_ingles = traduzir_texto(cargo_portugues)
         ramal = resultado.ramal
         email = resultado.email
         return nome, cargo_portugues, cargo_ingles, ramal, email

@@ -96,8 +96,8 @@ def transformar_em_jpg(caminho_arquivo):
             powerpoint.Quit()   
             print('Salvo em JPG')
             os.remove(caminho_arquivo)
-        except:
-            print('Não foi possível abrir o arquivo')
+        except Exception as e:
+            print(f'Não foi possível abrir o arquivo: {e}')
 
     elif caminho_arquivo.endswith(".ppt"):
         try:
@@ -108,16 +108,8 @@ def transformar_em_jpg(caminho_arquivo):
             powerpoint.Quit()
             print('Salvo em JPG')
             os.remove(caminho_arquivo)
-        except:
-            print('Não foi possível abrir o arquivo')
-
-
-def excluir_arquivo(caminho_arquivo):
-    if os.path.exists(caminho_arquivo):
-        os.remove(caminho_arquivo)
-        print("Arquivo excluído com sucesso.")
-    else:
-        print("O arquivo não existe.")
+        except Exception as e:
+            print(f'Não foi possível abrir o arquivo: {e}')
 
 def processar_assinaturas(id):
     informacoes_funcionario = buscar_informacoes_funcionario(id)

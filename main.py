@@ -1,3 +1,4 @@
+from flask import Flask, request, jsonify
 from email.mime.image import MIMEImage
 import os
 import shutil
@@ -12,6 +13,8 @@ from email.mime.text import MIMEText
 from dotenv import load_dotenv
 
 load_dotenv()
+
+app = Flask(__name__)
 
 conn_str = os.getenv("STRING_CONNECTION")
 
@@ -145,9 +148,19 @@ def processar_assinaturas(id):
 
             enviar_jpg_por_email(email, caminho_arquivo_jpg)
             shutil.rmtree(caminho_novo_pptx.replace(".pptx", ""))
-            print("Assinatura enviada com sucesso!")
-    else:
-        print(f"Informações do funcionário com ID {id} não encontradas.")
 
+@app.route('/gerar_assinatura', methods=['POST'])
+def api_processar_assinaturas():
+    data = request.json
+    id_funcionario = data.get('id')
+    if not id_funcionario:
+        return jsonify({"error": "ID do funcionário é necessário"}), 400
 
-processar_assinaturas()
+    try:
+        processar_assinaturas(id_funcionario)
+        return jsonify({"message": "Processamento de assinatura iniciado com sucesso"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+if __name__ == '__main__':
+    app.run(debug=True,host='0.0.0.0')

@@ -30,8 +30,10 @@ def buscar_informacoes_funcionario(id_funcionario):
 
     # Recuperar os resultados da consulta
     resultado = cursor.fetchone()
+    nomeSeparado = resultado.nome.split()
+    
     if resultado:
-        nome = resultado.nome
+        nome = nomeSeparado[0] + " " + nomeSeparado[-1]
         cargo_portugues = resultado.cargo
         cargo_ingles = traduzir_texto(cargo_portugues)
         ramal = resultado.ramal
@@ -83,7 +85,6 @@ def enviar_jpg_por_email(email, caminho_jpg):
         servidor.starttls()
         servidor.login(email_remetente, senha_remetente)
         servidor.send_message(mensagem)
-
 
 def transformar_em_jpg(caminho_arquivo):
     ppttoJPG = 17

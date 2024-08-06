@@ -27,8 +27,6 @@ def buscar_informacoes_funcionario(id_funcionario):
 
     query = f"SELECT nome, cargo, ramal, email FROM Funcionario WHERE idfuncionario = {id_funcionario}"
     cursor.execute(query)
-
-    # Recuperar os resultados da consulta
     resultado = cursor.fetchone()
     nomeSeparado = resultado.nome.split()
     
@@ -64,7 +62,6 @@ def enviar_jpg_por_email(email, caminho_jpg):
     email_remetente = os.getenv("SMTP_EMAIL_REMETENTE")
     senha_remetente = os.getenv("SMTP_SENHA_REMETENTE")
 
-    # Criar o objeto MIMEMultipart
     mensagem = MIMEMultipart()
     mensagem["From"] = email_remetente
     mensagem["To"] = email
@@ -74,13 +71,11 @@ def enviar_jpg_por_email(email, caminho_jpg):
     mensagem_texto = MIMEText(recado)
     mensagem.attach(mensagem_texto)
 
-    # Anexar o JPG à mensagem de e-mail
     with open(caminho_jpg, "rb") as arquivo_jpg:
         anexo_jpg = MIMEImage(arquivo_jpg.read(), _subtype="jpg")
         anexo_jpg.add_header("Content-Disposition", "attachment", filename="Assinatura.jpg")
         mensagem.attach(anexo_jpg)
 
-    # Enviar o e-mail
     with smtplib.SMTP(servidor_smtp, porta_smtp) as servidor:
         servidor.starttls()
         servidor.login(email_remetente, senha_remetente)
@@ -122,7 +117,6 @@ def excluir_arquivo(caminho_arquivo):
         print("O arquivo não existe.")
 
 def processar_assinaturas(id):
-
     informacoes_funcionario = buscar_informacoes_funcionario(id)
 
     if informacoes_funcionario:

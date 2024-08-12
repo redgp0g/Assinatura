@@ -31,8 +31,7 @@ jobs:
         echo SMTP_EMAIL_REMETENTE=${{ secrets.SMTP_EMAIL_REMETENTE }} >> .env
         echo SMTP_SENHA_REMETENTE=${{ secrets.SMTP_SENHA_REMETENTE }} >> .env
 
-    - name: Run Flask app
+    - name: Run Flask app with Waitress
       run: |
         venv\Scripts\activate
-        set FLASK_APP=app.py
-        flask run --host=0.0.0.0
+        waitress-serve --port=8080 app:app

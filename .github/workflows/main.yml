@@ -16,12 +16,14 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
-        python-version: '3.12.4'
+        python-version: '3.12'
 
-    - name: Install dependencies
+    - name: Change PowerShell execution policy
+      shell: pwsh
       run: |
+        Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope Process -Force
         python -m venv venv
-        venv\Scripts\activate
+        .\venv\Scripts\Activate
         pip install -r requirements.txt
 
     - name: Copy dotenv file

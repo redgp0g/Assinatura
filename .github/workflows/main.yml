@@ -1,0 +1,40 @@
+name: Deploy Api Schwarz App
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out the repository
+      uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+
+    - name: Install dependencies
+      run: |
+        python -m venv venv
+        source venv/bin/activate
+        pip install -r requirements.txt
+
+    - name: Copy dotenv file
+      run: |
+        cp .env.example .env  # Certifique-se de ter um arquivo .env.example no repositório
+
+    - name: Copy dotenv file
+      run: |
+        echo "STRING_CONNECTION=${{ secrets.STRING_CONNECTION }}" >> .env
+        echo "SMTP_EMAIL_REMETENTE=${{ secrets.SMTP_EMAIL_REMETENTE }}" >> .env
+        echo "SMTP_SENHA_REMETENTE=${{ secrets.SMTP_SENHA_REMETENTE }}" >> .env
+
+    - name: Run Flask app
+      run: |
+        source venv/bin/activate
+        nohup flask run --host=0.0.0.0 &

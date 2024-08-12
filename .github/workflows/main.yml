@@ -1,4 +1,4 @@
-name: Deploy Api Schwarz App
+name: Deploy Flask App
 
 on:
   push:
@@ -7,7 +7,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: windows-latest
+    runs-on: [self-hosted, windows]
 
     steps:
     - name: Check out the repository
@@ -27,10 +27,10 @@ jobs:
     - name: Copy dotenv file
       run: |
         copy .env.example .env
-        echo STRING_CONNECTION=${{ secrets.STRING_CONNECTION }} >> .env
-        echo SMTP_EMAIL_REMETENTE=${{ secrets.SMTP_EMAIL_REMETENTE }} >> .env
-        echo SMTP_SENHA_REMETENTE=${{ secrets.SMTP_SENHA_REMETENTE }} >> .env
+        echo "STRING_CONNECTION=${{ secrets.STRING_CONNECTION }}" >> .env
+        echo "SMTP_EMAIL_REMETENTE=${{ secrets.SMTP_EMAIL_REMETENTE }}" >> .env
+        echo "SMTP_SENHA_REMETENTE=${{ secrets.SMTP_SENHA_REMETENTE }}" >> .env
 
-    - name: Run Flask app with Waitress
+    - name: Start Flask app with Waitress
       run: |
-        start /B venv\Scripts\python.exe -m waitress --port=8080 app:app
+        Start-Process -FilePath 'venv\Scripts\python.exe' -ArgumentList '-m waitress --port=8080 app:app' -NoNewWindow -PassThru

@@ -33,5 +33,4 @@ jobs:
 
     - name: Run Flask app with Waitress
       run: |
-        venv\Scripts\activate
-        waitress-serve --port=8080 app:app
+        start /B venv\Scripts\python.exe -m waitress --host=192.168.1.100 --port=8080 app:app

@@ -26,9 +26,9 @@ jobs:
 
     - name: Copy dotenv file
       run: |
-        cp .env.example .env  # Certifique-se de ter um arquivo .env.example no repositório
+        cp .env.example .env
 
-    - name: Copy dotenv file
+    - name: Set environment variables
       run: |
         echo "STRING_CONNECTION=${{ secrets.STRING_CONNECTION }}" >> .env
         echo "SMTP_EMAIL_REMETENTE=${{ secrets.SMTP_EMAIL_REMETENTE }}" >> .env
@@ -37,4 +37,4 @@ jobs:
     - name: Run Flask app
       run: |
         source venv/bin/activate
-        nohup flask run --host=0.0.0.0 &
+        nohup flask run --host=0.0.0.0 --app main.py &

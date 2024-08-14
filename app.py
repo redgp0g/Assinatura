@@ -24,21 +24,20 @@ def traduzir_texto(texto):
     return traducao.text
 
 def buscar_informacoes_funcionario(id_funcionario):
-
     conn = pyodbc.connect(conn_str)
     cursor = conn.cursor()
 
     query = f"SELECT nome, cargo, ramal, email FROM Funcionario WHERE idfuncionario = {id_funcionario}"
     cursor.execute(query)
-    resultado = cursor.fetchone()
-    nomeSeparado = resultado.nome.split()
+    funcionario = cursor.fetchone()
+    nomeSeparado = funcionario.nome.split()
     
-    if resultado:
+    if funcionario:
         nome = nomeSeparado[0] + " " + nomeSeparado[-1]
-        cargo_portugues = resultado.cargo
+        cargo_portugues = funcionario.cargo
         cargo_ingles = traduzir_texto(cargo_portugues)
-        ramal = resultado.ramal
-        email = resultado.email
+        ramal = funcionario.ramal
+        email = funcionario.email
         return nome, cargo_portugues, cargo_ingles, ramal, email
     else:
         return None
@@ -86,30 +85,15 @@ def enviar_jpg_por_email(email, caminho_jpg):
 
 def transformar_em_jpg(caminho_arquivo):
     ppttoJPG = 17
-    if caminho_arquivo.endswith(".pptx"):
-        try:
-            powerpoint = win32com.client.Dispatch("Powerpoint.Application")
-            deck = powerpoint.Presentations.Open(caminho_arquivo)
-            time.sleep(2)
-            deck.SaveAs(caminho_arquivo[:-5], ppttoJPG)
-            deck.Close()
-            powerpoint.Quit()   
-            print('Salvo em JPG')
-            os.remove(caminho_arquivo)
-        except Exception as e:
-            print(f'Não foi possível abrir o arquivo: {e}')
-
-    elif caminho_arquivo.endswith(".ppt"):
-        try:
-            powerpoint = win32com.client.Dispatch("Powerpoint.Application")
-            deck = powerpoint.Presentations.Open(caminho_arquivo)
-            deck.SaveAs(caminho_arquivo[:-4], ppttoJPG)
-            deck.Close()
-            powerpoint.Quit()
-            print('Salvo em JPG')
-            os.remove(caminho_arquivo)
-        except Exception as e:
-            print(f'Não foi possível abrir o arquivo: {e}')
+    powerpoint = win32com.client.Dispatch("Powerpoint.Application")
+    deck = powerpoint.Presentations.Open(caminho_arquivo)
+    time.sleep(2)
+    
+    caminho_sem_extensao = os.path.splitext(caminho_arquivo)[0]
+    deck.SaveAs(caminho_sem_extensao, ppttoJPG)        
+    deck.Close()
+    powerpoint.Quit()   
+    os.remove(caminho_arquivo)
 
 def processar_assinaturas(id):
     informacoes_funcionario = buscar_informacoes_funcionario(id)
@@ -128,8 +112,8 @@ def processar_assinaturas(id):
 
         presentation = Presentation(caminho_novo_pptx)
 
-        novo_slide = presentation.slides[0]
-        atualizar_slide(novo_slide, nome, cargo_portugues, cargo_ingles, ramal)
+        slide = presentation.slides[0]
+        atualizar_slide(slide, nome, cargo_portugues, cargo_ingles, ramal)
 
         presentation.save(caminho_novo_pptx)
 

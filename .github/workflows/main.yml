@@ -9,23 +9,16 @@ jobs:
   deploy:
     runs-on: self-hosted
 
-    steps:
-    - name: Check out the repository
-      run: python --version
-      
+    steps:     
     - name: Check out the repository
       uses: actions/checkout@v2
-
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.12.4'
 
     - name: Install dependencies
       run: |
         python -m venv venv
         venv\Scripts\Activate
         pip install -r requirements.txt
+        
     - name: Copy dotenv file
       run: |
         copy .env.example .env

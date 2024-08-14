@@ -13,23 +13,16 @@ jobs:
     - name: Check out the repository
       uses: actions/checkout@v2
 
-    - name: Add Python to PATH
-      run: |
-        echo "C:\Users\guilherme.gordiano\AppData\Local\Programs\Python\Python312\Scripts" >> $env:GITHUB_PATH
-        echo "C:\Users\guilherme.gordiano\AppData\Local\Programs\Python\Python312" >> $env:GITHUB_PATH
-
-    - name: Print PATH environment variable
-      run: echo $env:PATH
-
-    - name: Verify Python Version
-      run: python --version
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.12.4'
 
     - name: Install dependencies
       run: |
         python -m venv venv
         venv\Scripts\Activate
         pip install -r requirements.txt
-
     - name: Copy dotenv file
       run: |
         copy .env.example .env

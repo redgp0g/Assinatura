@@ -19,13 +19,14 @@ jobs:
         venv\Scripts\Activate
         pip install -r requirements.txt
         
-    - name: Copy dotenv file
+    - name: Create .env file
       run: |
-        copy .env.example .env
-        echo STRING_CONNECTION=${{ secrets.STRING_CONNECTION }} >> .env
-        echo SMTP_EMAIL_REMETENTE=${{ secrets.SMTP_EMAIL_REMETENTE }} >> .env
-        echo SMTP_SENHA_REMETENTE=${{ secrets.SMTP_SENHA_REMETENTE }} >> .env
-        type .env  # Para visualizar o conteúdo do arquivo .env e verificar se os valores foram inseridos corretamente
+        cat <<EOF > .env
+        STRING_CONNECTION=${{ secrets.STRING_CONNECTION }}
+        SMTP_EMAIL_REMETENTE=${{ secrets.SMTP_EMAIL_REMETENTE }}
+        SMTP_SENHA_REMETENTE=${{ secrets.SMTP_SENHA_REMETENTE }}
+        EOF
+
     - name: Run Flask app with Waitress
       run: |
         venv\Scripts\activate

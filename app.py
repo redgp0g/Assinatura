@@ -134,7 +134,7 @@ def api_processar_assinaturas():
 
     try:
         processar_assinaturas(id_funcionario)
-        return jsonify({"message": "Processamento de assinatura iniciado com sucesso"}), 200
+        return jsonify({"message": "Assinatura enviada com sucesso!"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 

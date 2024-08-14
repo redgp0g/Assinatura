@@ -126,7 +126,7 @@ def processar_assinaturas(id):
             shutil.rmtree(caminho_novo_pptx.replace(".pptx", ""))
 
 @app.route('/gerar_assinatura', methods=['GET'])
-def api_processar_assinaturas():
+def gerar_assinatura():
     data = request.json
     id_funcionario = data.get('id')
     if not id_funcionario:

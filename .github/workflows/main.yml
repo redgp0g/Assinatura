@@ -25,6 +25,7 @@ jobs:
         echo STRING_CONNECTION=${{ secrets.STRING_CONNECTION }} >> .env
         echo SMTP_EMAIL_REMETENTE=${{ secrets.SMTP_EMAIL_REMETENTE }} >> .env
         echo SMTP_SENHA_REMETENTE=${{ secrets.SMTP_SENHA_REMETENTE }} >> .env
+        type .env  # Para visualizar o conteúdo do arquivo .env e verificar se os valores foram inseridos corretamente
     - name: Run Flask app with Waitress
       run: |
         venv\Scripts\activate

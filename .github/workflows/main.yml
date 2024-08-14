@@ -13,9 +13,6 @@ jobs:
     - name: Check out the repository
       uses: actions/checkout@v2
 
-    - name: Set PowerShell Execution Policy
-      run: powershell -ExecutionPolicy Unrestricted -Command "Set-ExecutionPolicy RemoteSigned -Scope Process -Force"
-
     - name: Set up Python
       uses: actions/setup-python@v2
       with:
@@ -26,9 +23,11 @@ jobs:
         python -m venv venv
         venv\Scripts\Activate
         pip install -r requirements.txt
+
     - name: Copy dotenv file
       run: |
         copy .env.example .env
         echo STRING_CONNECTION=${{ secrets.STRING_CONNECTION }} >> .env
         echo SMTP_EMAIL_REMETENTE=${{ secrets.SMTP_EMAIL_REMETENTE }} >> .env
         echo SMTP_SENHA_REMETENTE=${{ secrets.SMTP_SENHA_REMETENTE }} >> .env
+      shell: cmd

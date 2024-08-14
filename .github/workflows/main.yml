@@ -11,6 +11,9 @@ jobs:
 
     steps:
     - name: Check out the repository
+      run: python --version
+      
+    - name: Check out the repository
       uses: actions/checkout@v2
 
     - name: Set up Python

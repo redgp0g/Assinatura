@@ -125,7 +125,7 @@ def processar_assinaturas(id):
             enviar_jpg_por_email(email, caminho_arquivo_jpg)
             shutil.rmtree(caminho_novo_pptx.replace(".pptx", ""))
 
-@app.route('/gerar_assinatura', methods=['POST'])
+@app.route('/gerar_assinatura', methods=['GET'])
 def api_processar_assinaturas():
     data = request.json
     id_funcionario = data.get('id')

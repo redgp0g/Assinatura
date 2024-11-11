@@ -21,8 +21,6 @@ jobs:
         
     - name: Create .env file
       run: |
-        touch .env
         echo STRING_CONNECTION="${{ secrets.STRING_CONNECTION }}" >> .env
         echo SMTP_EMAIL_REMETENTE="${{ secrets.SMTP_EMAIL_REMETENTE }}" >> .env
         echo SMTP_SENHA_REMETENTE="${{ secrets.SMTP_SENHA_REMETENTE }}" >> .env
-        cat .env

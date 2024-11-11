@@ -21,9 +21,9 @@ jobs:
         
     - name: Create .env file
       run: |
-        echo "STRING_CONNECTION=${{ secrets.STRING_CONNECTION }}" >> .env
-        echo "SMTP_EMAIL_REMETENTE=${{ secrets.SMTP_EMAIL_REMETENTE }}" >> .env
-        echo "SMTP_SENHA_REMETENTE=${{ secrets.SMTP_SENHA_REMETENTE }}" >> .env
+        printf "STRING_CONNECTION=${{ secrets.STRING_CONNECTION }}\n" > .env
+        printf "SMTP_EMAIL_REMETENTE=${{ secrets.SMTP_EMAIL_REMETENTE }}\n" >> .env
+        printf "SMTP_SENHA_REMETENTE=${{ secrets.SMTP_SENHA_REMETENTE }}\n" >> .env
     
     - name: Run Flask app with Waitress
       run: |

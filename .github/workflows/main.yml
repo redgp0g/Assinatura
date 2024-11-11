@@ -24,9 +24,3 @@ jobs:
         echo STRING_CONNECTION=${{ secrets.STRING_CONNECTION }} > .env
         echo SMTP_EMAIL_REMETENTE=${{ secrets.SMTP_EMAIL_REMETENTE }} > .env
         echo SMTP_SENHA_REMETENTE=${{ secrets.SMTP_SENHA_REMETENTE }} > .env
-        
-    
-    - name: Run Flask app with Waitress
-      run: |
-        venv\Scripts\activate
-        waitress-serve --port=8080 app:app

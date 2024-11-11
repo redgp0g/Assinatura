@@ -20,11 +20,13 @@ jobs:
         pip install -r requirements.txt
         
     - name: Create .env file
-      shell: pwsh
       run: |
-        "STRING_CONNECTION=${{ secrets.STRING_CONNECTION }}" | Out-File -FilePath .env -Encoding UTF8
-        "SMTP_EMAIL_REMETENTE=${{ secrets.SMTP_EMAIL_REMETENTE }}" | Out-File -FilePath .env -Encoding UTF8 -Append
-        "SMTP_SENHA_REMETENTE=${{ secrets.SMTP_SENHA_REMETENTE }}" | Out-File -FilePath .env -Encoding UTF8 -Append
+        touch .env
+          echo STRING_CONNECTION=${{ secrets.STRING_CONNECTION }} > .env
+          echo SMTP_EMAIL_REMETENTE=${{ secrets.SMTP_EMAIL_REMETENTE }} > .env
+          echo SMTP_SENHA_REMETENTE=${{ secrets.SMTP_SENHA_REMETENTE }} > .env
+        cat .env
+        
     
     - name: Run Flask app with Waitress
       run: |

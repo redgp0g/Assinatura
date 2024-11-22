@@ -4,13 +4,11 @@ import os
 import shutil
 import time
 import win32com.client
-import pyodbc
 from pptx import Presentation
 from googletrans import Translator
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-
 
 app = Flask(__name__)
 
@@ -18,22 +16,6 @@ def traduzir_texto(texto):
     translator = Translator()
     traducao = translator.translate(texto, src='pt', dest='en')
     return traducao.text
-
-def atualizar_slide(slide, nome, cargo_portugues, cargo_ingles, ramal):
-
-    for shape in slide.shapes:
-        if shape.has_text_frame:
-            text_frame = shape.text_frame
-            for paragraph in text_frame.paragraphs:
-                for run in paragraph.runs:
-                    if "NOME" in run.text:
-                        run.text = nome
-                    if "CARGOPT" in run.text:
-                        run.text = cargo_portugues
-                    if "CARGOIN" in run.text:
-                        run.text = cargo_ingles.upper()
-                    if "RAMAL" in run.text:
-                        run.text = run.text.replace("RAMAL", ramal)
 
 def enviar_jpg_por_email(email, caminho_jpg):
     servidor_smtp = "smtp.gmail.com"
@@ -78,13 +60,17 @@ def processar_assinaturas(data):
     cargo_portugues = data.get('cargo')
     cargo_ingles = traduzir_texto(cargo_portugues)
     ramal = data.get('ramal')
+    celular = data.get('celular')
     email = data.get('email')
 
     if ramal is None:
         ramal = '8700'
 
     caminho_raiz = os.getcwd()
-    caminho_modelo = os.path.join(caminho_raiz, "Assinatura e-mail Schwarz.pptx")
+    if(celular != None):
+        caminho_modelo = os.path.join(caminho_raiz, "Assinatura e-mail Schwarz com Celular.pptx")
+    else:
+        caminho_modelo = os.path.join(caminho_raiz, "Assinatura e-mail Schwarz.pptx")
     caminho_novo_pptx = os.path.join(caminho_raiz, nome + ".pptx")
 
     shutil.copy2(caminho_modelo, caminho_novo_pptx)
@@ -92,7 +78,21 @@ def processar_assinaturas(data):
     presentation = Presentation(caminho_novo_pptx)
 
     slide = presentation.slides[0]
-    atualizar_slide(slide, nome, cargo_portugues, cargo_ingles, ramal)
+    for shape in slide.shapes:
+        if shape.has_text_frame:
+            text_frame = shape.text_frame
+            for paragraph in text_frame.paragraphs:
+                for run in paragraph.runs:
+                    if "NOME" in run.text:
+                        run.text = nome
+                    if "CARGOPT" in run.text:
+                        run.text = cargo_portugues
+                    if "CARGOIN" in run.text:
+                        run.text = cargo_ingles.upper()
+                    if "RAMAL" in run.text:
+                        run.text = run.text.replace("RAMAL", ramal)
+                    if "CELULAR" in run.text:
+                        run.text = run.text.replace("CELULAR", ramal)
 
     presentation.save(caminho_novo_pptx)
 

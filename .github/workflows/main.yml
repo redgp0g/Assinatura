@@ -7,9 +7,9 @@ on:
 
 jobs:
   deploy:
-    runs-on: [self-hosted, windows]
+    runs-on: self-hosted
 
-    steps:
+    steps:     
     - name: Check out the repository
       uses: actions/checkout@v2
 
@@ -23,4 +23,3 @@ jobs:
         python -m venv venv
         venv\Scripts\Activate
         pip install -r requirements.txt
-

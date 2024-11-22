@@ -105,8 +105,14 @@ def processar_assinaturas(data):
 
 @app.route('/gerar_assinatura', methods=['GET'])
 def gerar_assinatura():
-    data = request.json    
     try:
+        data = {
+            "nome": request.args.get('nome'),
+            "cargo": request.args.get('cargo'),
+            "ramal": request.args.get('ramal'),
+            "celular": request.args.get('celular'),
+            "email": request.args.get('email')
+        }
         processar_assinaturas(data)
         return jsonify({"message": "Assinatura enviada com sucesso!"}), 200
     except Exception as e:

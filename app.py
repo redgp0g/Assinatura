@@ -23,25 +23,6 @@ def traduzir_texto(texto):
     traducao = translator.translate(texto, src='pt', dest='en')
     return traducao.text
 
-def buscar_informacoes_funcionario(id_funcionario):
-    conn = pyodbc.connect(conn_str)
-    cursor = conn.cursor()
-
-    query = f"SELECT nome, cargo, ramal, email FROM Funcionario WHERE idfuncionario = {id_funcionario}"
-    cursor.execute(query)
-    funcionario = cursor.fetchone()
-    nomeSeparado = funcionario.nome.split()
-    
-    if funcionario:
-        nome = nomeSeparado[0] + " " + nomeSeparado[-1]
-        cargo_portugues = funcionario.cargo
-        cargo_ingles = traduzir_texto(cargo_portugues)
-        ramal = funcionario.ramal
-        email = funcionario.email
-        return nome, cargo_portugues, cargo_ingles, ramal, email
-    else:
-        return None
-
 def atualizar_slide(slide, nome, cargo_portugues, cargo_ingles, ramal):
 
     for shape in slide.shapes:
@@ -95,45 +76,42 @@ def transformar_em_jpg(caminho_arquivo):
     powerpoint.Quit()   
     os.remove(caminho_arquivo)
 
-def processar_assinaturas(id):
-    informacoes_funcionario = buscar_informacoes_funcionario(id)
+def processar_assinaturas(data):
 
-    if informacoes_funcionario:
-        nome, cargo_portugues, cargo_ingles, ramal, email = informacoes_funcionario
+    nome = data.get('nome').upper()
+    cargo_portugues = data.get('cargo')
+    cargo_ingles = traduzir_texto(cargo_portugues)
+    ramal = data.get('ramal')
+    email = data.get('email')
 
-        if ramal is None:
-            ramal = '8700'
+    if ramal is None:
+        ramal = '8700'
 
-        caminho_raiz = os.getcwd()
-        caminho_modelo = os.path.join(caminho_raiz, "Assinatura e-mail Schwarz.pptx")
-        caminho_novo_pptx = os.path.join(caminho_raiz, nome + ".pptx")
+    caminho_raiz = os.getcwd()
+    caminho_modelo = os.path.join(caminho_raiz, "Assinatura e-mail Schwarz.pptx")
+    caminho_novo_pptx = os.path.join(caminho_raiz, nome + ".pptx")
 
-        shutil.copy2(caminho_modelo, caminho_novo_pptx)
+    shutil.copy2(caminho_modelo, caminho_novo_pptx)
 
-        presentation = Presentation(caminho_novo_pptx)
+    presentation = Presentation(caminho_novo_pptx)
 
-        slide = presentation.slides[0]
-        atualizar_slide(slide, nome, cargo_portugues, cargo_ingles, ramal)
+    slide = presentation.slides[0]
+    atualizar_slide(slide, nome, cargo_portugues, cargo_ingles, ramal)
 
-        presentation.save(caminho_novo_pptx)
+    presentation.save(caminho_novo_pptx)
 
-        transformar_em_jpg(caminho_novo_pptx)
+    transformar_em_jpg(caminho_novo_pptx)
 
-        if email:
-            caminho_arquivo_jpg = caminho_novo_pptx.replace(".pptx", "") + "\Slide1.JPG"
+    caminho_arquivo_jpg = caminho_novo_pptx.replace(".pptx", "") + "\Slide1.JPG"
 
-            enviar_jpg_por_email(email, caminho_arquivo_jpg)
-            shutil.rmtree(caminho_novo_pptx.replace(".pptx", ""))
+    enviar_jpg_por_email(email, caminho_arquivo_jpg)
+    shutil.rmtree(caminho_novo_pptx.replace(".pptx", ""))
 
 @app.route('/gerar_assinatura', methods=['GET'])
 def gerar_assinatura():
-    data = request.json
-    id_funcionario = data.get('id')
-    if not id_funcionario:
-        return jsonify({"error": "ID do funcionário é necessário"}), 400
-
+    data = request.json    
     try:
-        processar_assinaturas(id_funcionario)
+        processar_assinaturas(data)
         return jsonify({"message": "Assinatura enviada com sucesso!"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500

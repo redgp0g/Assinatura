@@ -4,6 +4,7 @@ import os
 import shutil
 import time
 import win32com.client
+import pythoncom
 from pptx import Presentation
 from googletrans import Translator
 import smtplib
@@ -43,6 +44,7 @@ def enviar_jpg_por_email(email, caminho_jpg):
         servidor.send_message(mensagem)
 
 def transformar_em_jpg(caminho_arquivo):
+    pythoncom.CoInitialize()
     ppttoJPG = 17
     powerpoint = win32com.client.Dispatch("Powerpoint.Application")
     deck = powerpoint.Presentations.Open(caminho_arquivo)

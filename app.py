@@ -56,12 +56,12 @@ def transformar_em_jpg(caminho_arquivo):
 
 def processar_assinaturas(data):
 
-    nome = data.get('nome').upper()
-    cargo_portugues = data.get('cargo')
+    nome = data['nome'].upper()
+    cargo_portugues = data['cargo'].upper()
     cargo_ingles = traduzir_texto(cargo_portugues)
-    ramal = data.get('ramal')
-    celular = data.get('celular')
-    email = data.get('email')
+    ramal = data['ramal']
+    celular = data['celular']
+    email = data['email']
 
     if ramal is None:
         ramal = '8700'
@@ -106,12 +106,13 @@ def processar_assinaturas(data):
 @app.route('/gerar_assinatura', methods=['GET'])
 def gerar_assinatura():
     try:
+        data_json = request.json
         data = {
-            "nome": request.args.get('nome'),
-            "cargo": request.args.get('cargo'),
-            "ramal": request.args.get('ramal'),
-            "celular": request.args.get('celular'),
-            "email": request.args.get('email')
+            "nome": data_json.get('nome'),
+            "cargo": data_json.get('cargo'),
+            "ramal": data_json.get('ramal'),
+            "celular": data_json.get('celular'),
+            "email": data_json.get('email')
         }
         processar_assinaturas(data)
         return jsonify({"message": "Assinatura enviada com sucesso!"}), 200

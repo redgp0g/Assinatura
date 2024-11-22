@@ -92,7 +92,7 @@ def processar_assinaturas(data):
                     if "RAMAL" in run.text:
                         run.text = run.text.replace("RAMAL", ramal)
                     if "CELULAR" in run.text:
-                        run.text = run.text.replace("CELULAR", ramal)
+                        run.text = run.text.replace("CELULAR", celular)
 
     presentation.save(caminho_novo_pptx)
 

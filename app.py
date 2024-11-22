@@ -10,13 +10,9 @@ from googletrans import Translator
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
-from dotenv import load_dotenv
 
-load_dotenv()
 
 app = Flask(__name__)
-
-conn_str = os.getenv("STRING_CONNECTION")
 
 def traduzir_texto(texto):
     translator = Translator()
@@ -42,8 +38,8 @@ def atualizar_slide(slide, nome, cargo_portugues, cargo_ingles, ramal):
 def enviar_jpg_por_email(email, caminho_jpg):
     servidor_smtp = "smtp.gmail.com"
     porta_smtp = 587
-    email_remetente = os.getenv("SMTP_EMAIL_REMETENTE")
-    senha_remetente = os.getenv("SMTP_SENHA_REMETENTE")
+    email_remetente = os.getenv("SCHWARZ_EMAIL_COMUNICACAO")
+    senha_remetente = os.getenv("SCHWARZ_SENHA_EMAIL_COMUNICACAO")
 
     mensagem = MIMEMultipart()
     mensagem["From"] = email_remetente

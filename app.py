@@ -1,4 +1,5 @@
 from flask import Flask, request, jsonify
+from flasgger import Swagger
 from email.mime.image import MIMEImage
 import os
 import shutil
@@ -12,7 +13,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
 app = Flask(__name__)
-
+swagger = Swagger(app) 
 def traduzir_texto(texto):
     translator = Translator()
     traducao = translator.translate(texto, src='pt', dest='en')
@@ -107,6 +108,39 @@ def processar_assinaturas(data):
 
 @app.route('/gerar_assinatura', methods=['GET'])
 def gerar_assinatura():
+    """
+    Gera uma assinatura de e-mail com base nos dados fornecidos.
+    ---
+    tags:
+      - Assinatura
+    parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            nome:
+              type: string
+              example: Guilherme Gordiano
+            cargo:
+              type: string
+              example: Estagiário
+            ramal:
+              type: string
+              example: 8781
+            celular:
+              type: string
+              example: +55 11 91234-5678
+            email:
+              type: string
+              example: guilherme.gordiano@schwarz.com.br
+    responses:
+      200:
+        description: Assinatura enviada com sucesso
+      500:
+        description: Erro no processamento
+    """
     try:
         data_json = request.json
         data = {
@@ -122,4 +156,4 @@ def gerar_assinatura():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
-    app.run(debug=True,host='0.0.0.0')
+    app.run(debug=True, host='0.0.0.0')

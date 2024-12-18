@@ -1,0 +1,86 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "version": "1.0.0",
+      "title": "GPTW API",
+      "description": "API para geração de assinaturas com base nos dados fornecidos.",
+      "contact": {
+        "email": "8nM2Y@example.com"
+      },
+      "license": {
+        "name": "MIT",
+        "url": "https://opensource.org/licenses/MIT"
+      }
+    },
+    "host": "192.168.2.96:8080",  
+    "schemes": ["http"],
+    "paths": {
+      "/gerar_assinatura": {
+        "post": {
+          "tags": ["Assinatura"],
+          "summary": "Gera uma assinatura de e-mail",
+          "description": "Recebe os dados do usuário e gera uma assinatura de e-mail personalizada.",
+          "parameters": [
+            {
+              "in": "body",
+              "name": "body",
+              "required": true,
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nome": {
+                    "type": "string",
+                    "example": "Guilherme Gordiano"
+                  },
+                  "cargo": {
+                    "type": "string",
+                    "example": "Estagiário"
+                  },
+                  "ramal": {
+                    "type": "string",
+                    "example": "8781"
+                  },
+                  "celular": {
+                    "type": "string",
+                    "example": "+55 11 91234-5678"
+                  },
+                  "email": {
+                    "type": "string",
+                    "example": "guilherme.gordiano@schwarz.com.br"
+                  }
+                },
+                "required": ["nome", "cargo", "email"]
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Assinatura enviada com sucesso",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "message": {
+                    "type": "string",
+                    "example": "Assinatura enviada com sucesso!"
+                  }
+                }
+              }
+            },
+            "500": {
+              "description": "Erro no processamento",
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "error": {
+                    "type": "string",
+                    "example": "Detalhes do erro"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  

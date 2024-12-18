@@ -1,5 +1,4 @@
-from flask import Flask, request, jsonify
-from flasgger import Swagger
+from flask import Flask, request, jsonify, send_from_directory
 from email.mime.image import MIMEImage
 import os
 import shutil
@@ -11,9 +10,10 @@ from googletrans import Translator
 import smtplib
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
+from flask_swagger_ui import get_swaggerui_blueprint
 
 app = Flask(__name__)
-swagger = Swagger(app) 
+
 def traduzir_texto(texto):
     translator = Translator()
     traducao = translator.translate(texto, src='pt', dest='en')
@@ -106,41 +106,24 @@ def processar_assinaturas(data):
     enviar_jpg_por_email(email, caminho_arquivo_jpg)
     shutil.rmtree(caminho_novo_pptx.replace(".pptx", ""))
 
-@app.route('/gerar_assinatura', methods=['GET'])
+@app.route('/static/<path:path>')
+def send_static(path):
+    return send_from_directory('static', path)
+
+SWAGGER_URL = '/swagger'
+API_URL = '/static/swagger.json'
+swaggerui_blueprint = get_swaggerui_blueprint(
+    SWAGGER_URL,
+    API_URL,
+    config={
+        'app_name': "API-Python"
+    }
+)
+
+app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
+
+@app.route('/gerar_assinatura', methods=['POST'])
 def gerar_assinatura():
-    """
-    Gera uma assinatura de e-mail com base nos dados fornecidos.
-    ---
-    tags:
-      - Assinatura
-    parameters:
-      - name: body
-        in: body
-        required: true
-        schema:
-          type: object
-          properties:
-            nome:
-              type: string
-              example: Guilherme Gordiano
-            cargo:
-              type: string
-              example: Estagiário
-            ramal:
-              type: string
-              example: 8781
-            celular:
-              type: string
-              example: +55 11 91234-5678
-            email:
-              type: string
-              example: guilherme.gordiano@schwarz.com.br
-    responses:
-      200:
-        description: Assinatura enviada com sucesso
-      500:
-        description: Erro no processamento
-    """
     try:
         data_json = request.json
         data = {
